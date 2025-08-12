@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebView Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .section {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #cccccc;
+        }
+        video, img {
+            max-width: 100%;
+            margin-top: 10px;
+        }
+        #map {
+            height: 200px;
+            width: 100%;
+            background-color: #ddd;
+            margin-top: 10px;
+        }
+        .preview {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #status {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <h2>URL Input and Browse</h2>
+        <input type="text" id="urlInput" value="https://google.com" placeholder="Enter URL" style="width: 80%;">
+        <button id="browseButton">Browse</button>
+    </div>
+
+    <script>
+        document.getElementById('browseButton').addEventListener('click', function() {
+            const url = document.getElementById('urlInput').value;
+            if (url) {
+                try {
+                    // Assuming you have a function to load the URL in the WebView
+                    loadUrlInWebView(url);
+                } catch (error) {
+                    console.error("Error loading URL:", error);
+                    alert("Failed to load the URL. Please check the console for more details.");
+                }
+            } else {
+                alert("Please enter a valid URL.");
+            }
+        });
+
+        function loadUrlInWebView(url) {
+            try {
+                // Use window.location.href to navigate to the URL
+                window.location.href = url; // This will replace the current page with the new URL
+            } catch (error) {
+                console.error("Error loading URL:", error);
+                alert("Failed to load the URL. Please check the console for more details.");
+            }
+        }
+    </script>
+    <div class="section">
+        <h2>File Upload Test</h2>
+        <input type="file" id="fileInput" accept="*/*" multiple>
+        <div class="preview" id="filePreview"></div>
+    </div>
+
+    <div class="section">
+        <h2>Camera Test</h2>
+        <button onclick="startCamera()">Start Camera</button>
+        <button onclick="takePicture()">Take Picture</button>
+        <video id="videoElement" autoplay playsinline style="display: none;"></video>
+        <canvas id="canvas" style="display: none;"></canvas>
+        <img id="capturedImage" style="display: none;">
+    </div>
+
+    <div class="section">
+        <h2>Microphone Test</h2>
+        <button id="startRecording">Start Recording</button>
+        <button id="stopRecording" disabled>Stop Recording</button>
+        <audio id="audioPlayer" controls style="display: none;"></audio>
+    </div>
+
+    <div class="section">
+        <h2>Location Test</h2>
+        <button onclick="getLocation()">Get Current Location</button>
+        <button onclick="watchLocation()">Watch Location</button>
+        <button onclick="stopWatchingLocation()" disabled>Stop Watching</button>
+        <div id="locationStatus"></div>
+        <div id="map"></div>
+    </div>
+
+    <div class="section">
+        <h2>Download Test</h2>
+        <button onclick="downloadSampleFile()">Download Sample File</button>
+    </div>
+
+    <div id="status"></div>
+
+    <script>
+        // File Upload Handler
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const preview = document.getElementById('filePreview');
+            preview.innerHTML = '';
+            for (let file of e.target.files) {
+                preview.innerHTML += `Selected file: ${file.name} (${file.type})<br>`;
+            }
+        });
+
+        // Camera Handler
+        let videoStream;
+        async function startCamera() {
+            try {
+                const video = document.getElementById('videoElement');
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = videoStream;
+                video.style.display = 'block';
+                updateStatus('Camera started successfully');
+            } catch (err) {
+                updateStatus('Error accessing camera: ' + err.message);
+            }
+        }
+
+        function takePicture() {
+            const video = document.getElementById('videoElement');
+            const canvas = document.getElementById('canvas');
+            const photo = document.getElementById('capturedImage');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            photo.src = canvas.toDataURL('image/png');
+            photo.style.display = 'block';
+            updateStatus('Picture taken');
+        }
+
+        // Microphone Handler
+        let mediaRecorder;
+        let audioChunks = [];
+
+        document.getElementById('startRecording').addEventListener('click', async function() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.addEventListener('dataavailable', event => {
+                    audioChunks.push(event.data);
+                });
+
+                mediaRecorder.addEventListener('stop', () => {
+                    const audioBlob = new Blob(audioChunks);
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = document.getElementById('audioPlayer');
+                    audio.src = audioUrl;
+                    audio.style.display = 'block';
+                });
+
+                mediaRecorder.start();
+                this.disabled = true;
+                document.getElementById('stopRecording').disabled = false;
+                updateStatus('Recording started');
+            } catch (err) {
+                updateStatus('Error accessing microphone: ' + err.message);
+            }
+        });
+
+        document.getElementById('stopRecording').addEventListener('click', function() {
+            mediaRecorder.stop();
+            this.disabled = true;
+            document.getElementById('startRecording').disabled = false;
+            updateStatus('Recording stopped');
+        });
+
+        // Location Handler
+        let watchId = null;
+        
+        function getLocation() {
+            const locationStatus = document.getElementById('locationStatus');
+            if (navigator.geolocation) {
+                locationStatus.innerHTML = 'Requesting location...';
+                navigator.geolocation.getCurrentPosition(
+                    showPosition,
+                    showError,
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                locationStatus.innerHTML = 'Geolocation is not supported by this browser.';
+                updateStatus('Geolocation not supported');
+            }
+        }
+
+        function watchLocation() {
+            const locationStatus = document.getElementById('locationStatus');
+            if (navigator.geolocation) {
+                locationStatus.innerHTML = 'Watching location...';
+                document.querySelector('button[onclick="watchLocation()"]').disabled = true;
+                document.querySelector('button[onclick="stopWatchingLocation()"]').disabled = false;
+                
+                watchId = navigator.geolocation.watchPosition(
+                    showPosition,
+                    showError,
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                locationStatus.innerHTML = 'Geolocation is not supported by this browser.';
+                updateStatus('Geolocation not supported');
+            }
+        }
+
+        function stopWatchingLocation() {
+            if (watchId != null) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+                document.querySelector('button[onclick="watchLocation()"]').disabled = false;
+                document.querySelector('button[onclick="stopWatchingLocation()"]').disabled = true;
+                updateStatus('Location watching stopped');
+            }
+        }
+
+        function showPosition(position) {
+            const locationStatus = document.getElementById('locationStatus');
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            
+            locationStatus.innerHTML = 
+                `Latitude: ${latitude}<br>
+                 Longitude: ${longitude}<br>
+                 Accuracy: ${accuracy} meters<br>
+                 Timestamp: ${new Date(position.timestamp).toLocaleString()}`;
+            
+            updateStatus('Location retrieved successfully');
+        }
+
+        function showError(error) {
+            const locationStatus = document.getElementById('locationStatus');
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    locationStatus.innerHTML = "Location permission denied.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    locationStatus.innerHTML = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    locationStatus.innerHTML = "Location request timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    locationStatus.innerHTML = "An unknown error occurred.";
+                    break;
+            }
+            updateStatus('Error getting location: ' + error.message);
+        }
+
+        // Download Handler
+        function downloadSampleFile() {
+            const link = document.createElement('a');
+            link.href = 'data:text/plain;charset=utf-8,This is a test download file';
+            link.download = 'test.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            updateStatus('Download initiated');
+        }
+
+        // Status Updates
+        function updateStatus(message) {
+            const status = document.getElementById('status');
+            status.innerHTML = `Status: ${message}`;
+        }
+
+        // Initial status
+        updateStatus('Page loaded successfully');
+    </script>
+</body>
+</html>
