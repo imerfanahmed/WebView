@@ -115,17 +115,17 @@ public class MainActivity extends AppCompatActivity {
         permissionManager = new PermissionManager(this);
         setupWebView();
         setupSwipeRefresh();
-        AppLockManager.checkLockStatus(this, new AppLockManager.LockCallback() {
-            @Override
-            public void onLocked(String message, String redirectUrl) {
-
-            }
-
-            @Override
-            public void onUnlocked() {
-
-            }
-        });
+//        AppLockManager.checkLockStatus(this, new AppLockManager.LockCallback() {
+//            @Override
+//            public void onLocked(String message, String redirectUrl) {
+//
+//            }
+//
+//            @Override
+//            public void onUnlocked() {
+//
+//            }
+//        });
 //        webView.loadUrl("file:///android_asset/test.html");
         webView.loadUrl("https://edueasy.jabalunnur.com");
     }

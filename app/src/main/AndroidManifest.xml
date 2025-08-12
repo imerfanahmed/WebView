@@ -8,7 +8,7 @@
     
     <!-- Storage Permissions for Android 12 and lower -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="35" />
     
     <!-- Storage Permissions for Android 13 and higher -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -39,7 +39,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WebView"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="35">
 
         <activity
             android:name=".SplashActivity"

@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId = "com.dataenvelope.edueasyadminportal"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -29,6 +29,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildToolsVersion = "35.0.0"
 }
 
 dependencies {
