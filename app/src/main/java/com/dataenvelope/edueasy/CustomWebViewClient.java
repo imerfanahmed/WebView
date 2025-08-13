@@ -1,4 +1,4 @@
-package com.dataenvelope.edueasyadminportal;
+package com.dataenvelope.edueasy;
 
 import android.content.Context;
 import android.graphics.Bitmap;

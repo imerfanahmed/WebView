@@ -1,4 +1,4 @@
-package com.dataenvelope.edueasyadminportal;
+package com.dataenvelope.edueasy;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 //        webView.loadUrl("file:///android_asset/test.html");
-        webView.loadUrl("https://edueasy.jabalunnur.com");
+        webView.loadUrl("https://edueasy.gadgetgalore.biz/");
     }
 
     @SuppressLint("ClickableViewAccessibility")

@@ -5,17 +5,17 @@ plugins {
 android {
     signingConfigs {
         create("release") {
-            storeFile = file("/home/erfan/Downloads/EdueasyTeacherAdminPortal-main/edueasy.jks")
+            storeFile = file("/home/erfan/Downloads/EdueasyTeacher-main/edueasy.jks")
             storePassword = "password"
             keyAlias = "edueasy"
             keyPassword = "password"
         }
     }
-    namespace = "com.dataenvelope.edueasyadminportal"
+    namespace = "com.dataenvelope.edueasy"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.dataenvelope.edueasyadminportal"
+        applicationId = "com.dataenvelope.edueasy"
         minSdk = 28
         versionCode = 1
         versionName = "1.0"

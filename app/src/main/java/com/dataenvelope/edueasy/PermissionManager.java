@@ -1,4 +1,4 @@
-package com.dataenvelope.edueasyadminportal;
+package com.dataenvelope.edueasy;
 
 import android.Manifest;
 import android.annotation.SuppressLint;

@@ -1,4 +1,4 @@
-package com.dataenvelope.edueasyadminportal;
+package com.dataenvelope.edueasy;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.dataenvelope.edueasyadminportal", appContext.getPackageName());
+        assertEquals("com.dataenvelope.edueasy", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package com.dataenvelope.edueasyadminportal;
+package com.dataenvelope.edueasy;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
