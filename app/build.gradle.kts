@@ -3,12 +3,20 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file("/home/erfan/Downloads/EdueasyTeacherAdminPortal-main/edueasy.jks")
+            storePassword = "password"
+            keyAlias = "edueasy"
+            keyPassword = "password"
+        }
+    }
     namespace = "com.dataenvelope.edueasyadminportal"
     compileSdk = 36
 
     defaultConfig {
         applicationId = "com.dataenvelope.edueasyadminportal"
-        minSdk = 24
+        minSdk = 28
         versionCode = 1
         versionName = "1.0"
 
@@ -28,7 +36,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    buildToolsVersion = "35.0.0"
+    buildToolsVersion = "36.0.0"
 }
 
 dependencies {
