@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduEasy - Educational Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'edu-blue': '#2563eb',
+                        'edu-purple': '#7c3aed',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+<!-- Main Container -->
+<div class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="w-full max-w-md mx-auto">
+        <!-- Logo/Header Section -->
+        <div class="text-center mb-8">
+            <div class="mb-6">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-2">
+                    Edu<span class="text-edu-blue">Easy</span>
+                </h1>
+                <p class="text-gray-600 text-sm md:text-base">
+                    Your Gateway to Learning Excellence
+                </p>
+            </div>
+
+            <!-- Decorative Element -->
+            <div class="w-20 h-1 bg-gradient-to-r from-edu-blue to-edu-purple mx-auto rounded-full mb-8"></div>
+        </div>
+
+        <!-- Login Options Card -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-gray-100">
+            <h2 class="text-xl md:text-2xl font-semibold text-gray-800 text-center mb-6">
+                Choose Your Portal
+            </h2>
+
+            <!-- Login Buttons Container -->
+            <div class="space-y-4">
+                <!-- Admin Portal Button -->
+                <a href="https://edueasy.jabalunnur.com/login" class="w-full group relative overflow-hidden bg-gradient-to-r from-edu-blue to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 block text-center no-underline">
+                    <div class="flex items-center justify-center space-x-3">
+                        <!-- Admin Icon -->
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        <span class="text-base md:text-lg">Login to Admin Portal</span>
+                    </div>
+                    <!-- Hover Effect -->
+                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                </a>
+
+                <!-- Student Portal Button -->
+                <a href="https://edueasy.jabalunnur.com/student/login" class="w-full group relative overflow-hidden bg-gradient-to-r from-edu-purple to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-300 block text-center no-underline">
+                    <div class="flex items-center justify-center space-x-3">
+                        <!-- Student Icon -->
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        <span class="text-base md:text-lg">Login to Student Portal</span>
+                    </div>
+                    <!-- Hover Effect -->
+                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                </a>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="mt-6 pt-6 border-t border-gray-100 text-center">
+                <p class="text-sm text-gray-500">
+                    Need help? Contact support at
+                    <a href="mailto:support@edueasy.com" class="text-edu-blue hover:underline">
+                        support@edueasy.com
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 text-sm text-gray-500">
+            <p>&copy; 2025 EduEasy. All rights reserved.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Optional: Custom styles for better link behavior -->
+<style>
+    /* Ensure anchor tags behave like buttons */
+    a:focus {
+        outline: none;
+    }
+</style>
+</body>
+</html>
