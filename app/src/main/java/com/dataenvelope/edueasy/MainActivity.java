@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //            }
 //        });
-        webView.loadUrl("file:///android_asset/edueasy-navigator.html");
+        webView.loadUrl("https://edueasy.jabalunnur.com/student/login");
     }
 
     @SuppressLint("ClickableViewAccessibility")

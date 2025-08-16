@@ -26,12 +26,12 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         splashIcon = findViewById(R.id.splashIcon);
-        appName = findViewById(R.id.appName);
+//        appName = findViewById(R.id.appName);
         loadingProgress = findViewById(R.id.loadingProgress);
 
         // Initially hide the views
         splashIcon.setAlpha(0f);
-        appName.setAlpha(0f);
+//        appName.setAlpha(0f);
         loadingProgress.setAlpha(0f);
 
         // Start animations
@@ -53,14 +53,14 @@ public class SplashActivity extends AppCompatActivity {
         iconAnimSet.setInterpolator(new DecelerateInterpolator());
 
         // App name animation
-        ObjectAnimator nameAlpha = ObjectAnimator.ofFloat(appName, "alpha", 0f, 1f);
-        ObjectAnimator nameTranslateY = ObjectAnimator.ofFloat(appName, "translationY", 50f, 0f);
-
-        AnimatorSet nameAnimSet = new AnimatorSet();
-        nameAnimSet.playTogether(nameAlpha, nameTranslateY);
-        nameAnimSet.setDuration(800);
-        nameAnimSet.setStartDelay(300);
-        nameAnimSet.setInterpolator(new AccelerateDecelerateInterpolator());
+//        ObjectAnimator nameAlpha = ObjectAnimator.ofFloat(appName, "alpha", 0f, 1f);
+//        ObjectAnimator nameTranslateY = ObjectAnimator.ofFloat(appName, "translationY", 50f, 0f);
+//
+//        AnimatorSet nameAnimSet = new AnimatorSet();
+//        nameAnimSet.playTogether(nameAlpha, nameTranslateY);
+//        nameAnimSet.setDuration(800);
+//        nameAnimSet.setStartDelay(300);
+//        nameAnimSet.setInterpolator(new AccelerateDecelerateInterpolator());
 
         // Loading progress animation
         ObjectAnimator progressAlpha = ObjectAnimator.ofFloat(loadingProgress, "alpha", 0f, 1f);
@@ -69,7 +69,7 @@ public class SplashActivity extends AppCompatActivity {
 
         // Play all animations together
         AnimatorSet mainAnimSet = new AnimatorSet();
-        mainAnimSet.playTogether(iconAnimSet, nameAnimSet, progressAlpha);
+        mainAnimSet.playTogether(iconAnimSet, progressAlpha);
         mainAnimSet.start();
     }
 
