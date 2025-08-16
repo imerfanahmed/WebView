@@ -19,13 +19,15 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.webkit.CookieManager;
 import android.webkit.URLUtil;
-import android.webkit.DownloadListener;
+//import android.webkit.DownloadListener;
 import android.location.LocationManager;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ProgressBar;
+//import android.view.View;
+//import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private GeolocationPermissions.Callback geolocationCallback;
     private String geolocationOrigin;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ProgressBar progressBar;
+//    private ProgressBar progressBar;
     private float startY;
     private boolean isScrolling = false;
 
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressBar = findViewById(R.id.progressBar);
+//        progressBar = findViewById(R.id.progressBar);
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
         
         permissionManager = new PermissionManager(this);
@@ -131,9 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setupSwipeRefresh() {
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            webView.reload();
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> webView.reload());
 
         // Set the colors for the refresh animation
         swipeRefreshLayout.setColorSchemeResources(
@@ -159,11 +159,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     
                     // Disable SwipeRefreshLayout if webpage can scroll up or user is scrolling
-                    if (webView.getScrollY() > 0 || isScrolling) {
-                        swipeRefreshLayout.setEnabled(false);
-                    } else {
-                        swipeRefreshLayout.setEnabled(true);
-                    }
+                    swipeRefreshLayout.setEnabled(webView.getScrollY() <= 0 && !isScrolling);
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
@@ -184,14 +180,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                progressBar.setVisibility(View.VISIBLE);
-                progressBar.setProgress(0);
+//                progressBar.setVisibility(View.VISIBLE);
+//                progressBar.setProgress(0);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                progressBar.setVisibility(View.GONE);
+//                progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -200,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                progressBar.setProgress(newProgress);
+//                progressBar.setProgress(newProgress);
             }
 
             // Todo : (Restricted)
@@ -248,54 +244,50 @@ public class MainActivity extends AppCompatActivity {
 
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         // Todo : (Restricted)
-        webView.setDownloadListener(new DownloadListener() {
-            @Override
-            public void onDownloadStart(String url, String userAgent, String contentDisposition,
-                                      String mimeType, long contentLength) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                    if (!permissionManager.checkAndRequestStoragePermissions()) {
-                        Toast.makeText(MainActivity.this,
-                            "Storage permission required for downloading files",
-                            Toast.LENGTH_LONG).show();
-                        return;
-                    }
+        webView.setDownloadListener((url, userAgent, contentDisposition, mimeType, contentLength) -> {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                if (!permissionManager.checkAndRequestStoragePermissions()) {
+                    Toast.makeText(MainActivity.this,
+                        "Storage permission required for downloading files",
+                        Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+
+            try {
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+
+                String fileName = URLUtil.guessFileName(url, contentDisposition, mimeType);
+
+                request.setDescription("Downloading file...");
+                request.setTitle(fileName);
+                request.setNotificationVisibility(
+                        DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+                String cookies = CookieManager.getInstance().getCookie(url);
+                if (cookies != null) {
+                    request.addRequestHeader("cookie", cookies);
                 }
 
-                try {
-                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+                request.addRequestHeader("User-Agent", userAgent);
 
-                    String fileName = URLUtil.guessFileName(url, contentDisposition, mimeType);
-
-                    request.setDescription("Downloading file...");
-                    request.setTitle(fileName);
-                    request.setNotificationVisibility(
-                            DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
-
-                    String cookies = CookieManager.getInstance().getCookie(url);
-                    if (cookies != null) {
-                        request.addRequestHeader("cookie", cookies);
-                    }
-
-                    request.addRequestHeader("User-Agent", userAgent);
-
-                    DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                    if (dm != null) {
-                        dm.enqueue(request);
-                        Toast.makeText(MainActivity.this,
-                            "Downloading file...",
-                            Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(MainActivity.this,
-                            "Cannot access download service",
-                            Toast.LENGTH_LONG).show();
-                    }
-                } catch (Exception e) {
+                DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                if (dm != null) {
+                    dm.enqueue(request);
                     Toast.makeText(MainActivity.this,
-                        "Error starting download: " + e.getMessage(),
+                        "Downloading file...",
+                        Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this,
+                        "Cannot access download service",
                         Toast.LENGTH_LONG).show();
                 }
+            } catch (Exception e) {
+                Toast.makeText(MainActivity.this,
+                    "Error starting download: " + e.getMessage(),
+                    Toast.LENGTH_LONG).show();
             }
         });
 
@@ -303,11 +295,11 @@ public class MainActivity extends AppCompatActivity {
         GeolocationPermissions.getInstance().clearAll();
     }
 
-    private void checkLocationPermissions() {
-        if (!hasLocationPermissions()) {
-            requestPermissionLauncher.launch(LOCATION_PERMISSIONS);
-        }
-    }
+//    private void checkLocationPermissions() {
+//        if (!hasLocationPermissions()) {
+//            requestPermissionLauncher.launch(LOCATION_PERMISSIONS);
+//        }
+//    }
 
     private boolean hasLocationPermissions() {
         for (String permission : LOCATION_PERMISSIONS) {
@@ -345,17 +337,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
-    }
+//    @Override
+//    public void onBackPressed() {
+//        if (webView.canGoBack()) {
+//            webView.goBack();
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
@@ -464,19 +456,17 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {}
+        } catch (Exception ignored) {}
 
         try {
             networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch (Exception ex) {}
+        } catch (Exception ignored) {}
 
         if (!gpsEnabled && !networkEnabled) {
             // Show location settings dialog
             new AlertDialog.Builder(this)
                     .setMessage("Location services are disabled. Would you like to enable them?")
-                    .setPositiveButton("Settings", (dialogInterface, i) -> {
-                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    })
+                    .setPositiveButton("Settings", (dialogInterface, i) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
                     .setNegativeButton("Cancel", (dialogInterface, i) -> {
                         if (geolocationCallback != null) {
                             geolocationCallback.invoke(geolocationOrigin, false, false);
@@ -492,5 +482,11 @@ public class MainActivity extends AppCompatActivity {
                 geolocationOrigin = null;
             }
         }
+    }
+
+
+
+    public ActivityResultLauncher<String[]> getRequestPermissionLauncher() {
+        return requestPermissionLauncher;
     }
 }
